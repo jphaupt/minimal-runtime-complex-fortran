@@ -1,0 +1,76 @@
+#! #:set the_types = ['real', 'complex']
+
+! py dict val = {'real': 0._dp, 'complex': cpmlx(0._dp, 0._dp)}
+program add_complex_or_real
+    use iso_fortran_env, only: stdout => output_unit
+    implicit none
+#! #:for t in the_types
+#!     print*, "${t}$"
+#! #:endfor
+
+    type, abstract :: number_t
+        ! TODO
+        ! "redine" + operator (or at least declare it)
+    contains
+    ! generic functions with deferred procedures
+        procedure(add_prim_real_t), deferred :: add_prim_real
+        procedure(add_other_t), deferred :: add_other
+
+        generic :: operator(+) <= add_prim_real, add_other
+
+    ! not sure if there's anything to do in this example actually...
+        ! also I feel like fypp is superfluous in this example as well
+        ! print function ... not sure how to handle that or a sum for example
+            ! generic + deferred? Need to access val but type of val depends
+    endtype number_t
+
+    type, extends(number_t) :: real_number_t
+        real :: val = 0
+    endtype real_number_t
+
+    type, extends(number_t) :: complex_number_t
+        complex :: val = cmplx(0,0)
+    endtype complex_number_t
+
+    type, extends(number_t) :: ${num_type}$_number_t
+        ! val = ${
+        #:if num_type is 'complex'
+        val = cmplx(0,0)
+        #:else
+        val = 0.
+        #:endif
+        contains
+
+        function ${num_type}$_addition(x,y) result(z)
+            ${num_type}$ :: x, y
+            z = x + y
+
+        end subroutine ...
+
+    endtype ${num_type}$_number_t
+
+    class(number_t), allocatable :: x, y
+    logical :: wf_complex = .false.
+
+    if (wf_complex) then
+        allocate(complex_number_t :: x, y)
+    else
+        allocate(real_number_t :: x, y)
+    endif
+
+    ! want to be able to call here something like
+    ! class(number_t) z = x + y
+    ! call z%print()
+
+contains
+
+
+select type(x)
+type is(complex_number_t)
+    x%val = cmplx(1, 2)
+
+#! #:for t in the_types
+
+#! #:endfor
+
+end program add_complex_or_real
