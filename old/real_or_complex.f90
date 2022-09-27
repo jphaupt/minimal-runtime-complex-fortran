@@ -20,6 +20,7 @@ module real_or_complex
 
     type, extends(number_t) :: real_number_t
         real :: val = 0
+        ! procedure(add_generic_t) ::
     endtype real_number_t
 
     type, extends(number_t) :: complex_number_t
