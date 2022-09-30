@@ -3,12 +3,11 @@ program speed_test
     use real_or_complex_mod, only: number_t, real_number_t
     implicit none(type, external)
     integer, parameter :: ARRAY_SIZE = 1000000
-    class(number_t), allocatable :: aos
+    class(number_t), allocatable :: soa
         !! now struct of arrays
         !! not any more array of structs
     real :: x(ARRAY_SIZE)
         !! benchmark reals
-    ! TODO struct of array
     real :: tick, tock
         !! timer
     class(number_t), allocatable :: sum_tot
@@ -26,12 +25,12 @@ program speed_test
     ! struct of array
     ! aos = real_number_t([1.],1)
     call cpu_time(tick)
-    aos = real_number_t(ARRAY_SIZE=ARRAY_SIZE)
-    select type(aos)
+    soa = real_number_t(ARRAY_SIZE=ARRAY_SIZE)
+    select type(soa)
     type is(real_number_t)
-        allocate(aos%vals(ARRAY_SIZE))
-        aos%vals = 1.
-        sum_tot = real_number_t([sum(aos%vals)], 1)
+        allocate(soa%vals(ARRAY_SIZE))
+        soa%vals = 1.
+        sum_tot = real_number_t([sum(soa%vals)], 1)
     end select
 
     ! call aos%print()
