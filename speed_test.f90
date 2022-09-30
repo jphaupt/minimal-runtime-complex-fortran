@@ -59,6 +59,5 @@ program speed_test
     ! call cpu_time(tock)
     ! print '("AoS = ",f6.5," s")', tock - tick
 
-    ! TODO soa
 
 end program speed_test

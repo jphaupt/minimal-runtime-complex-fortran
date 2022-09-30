@@ -3,7 +3,7 @@ FC=gfortran
 FFLAGS=-O2
 
 
-all: main
+all: speed_test
 
 # SOURCES=do_stuff.f90 real_or_complex.f90
 
