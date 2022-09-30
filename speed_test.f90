@@ -1,14 +1,14 @@
 program speed_test
-    use iso_fortran_env, only: stdout => output_unit
+    use iso_fortran_env, only: stdout => output_unit, dp => real64
     use real_or_complex_mod, only: number_t, real_number_t
     implicit none(type, external)
-    integer, parameter :: ARRAY_SIZE = 2000000000
+    integer, parameter :: ARRAY_SIZE = 1000000000
     class(number_t), allocatable :: soa
         !! now struct of arrays
         !! not any more array of structs
-    real :: x(ARRAY_SIZE)
+    real(dp) :: x(ARRAY_SIZE)
         !! benchmark reals
-    real :: tick, tock
+    real(dp) :: tick, tock
         !! timer
     class(number_t), allocatable :: sum_tot
     integer :: i

@@ -1,6 +1,6 @@
 ! modified from Oskar's code (thanks Oskar!)
 module real_or_complex_mod
-    use iso_fortran_env, only: stdout => output_unit
+    use iso_fortran_env, only: stdout => output_unit, dp => real64
     implicit none(type, external)
     private
     public :: number_t, real_number_t
@@ -20,7 +20,7 @@ module real_or_complex_mod
     endtype number_t
 
     type, extends(number_t) :: real_number_t
-        real, allocatable :: vals(:)
+        real(dp), allocatable :: vals(:)
     contains
         procedure :: add_prim_real => real_add_prim_real
         ! procedure :: add_prim_real_reverse => real_add_prim_real_reverse
@@ -36,9 +36,10 @@ module real_or_complex_mod
     abstract interface
         pure function add_prim_real_t(this, x) result(res)
             import :: number_t
+            import :: dp
             implicit none
             class(number_t), intent(in) :: this
-            real, intent(in) :: x(this%ARRAY_SIZE)
+            real(dp), intent(in) :: x(this%ARRAY_SIZE)
             class(number_t), allocatable :: res
         end function
 
@@ -76,7 +77,7 @@ contains
 
     pure type(real_number_t) function real_number_ctor(vals, ARRAY_SIZE) result(this)
         integer, intent(in) :: ARRAY_SIZE
-        real, intent(in) :: vals(ARRAY_SIZE)
+        real(dp), intent(in) :: vals(ARRAY_SIZE)
         this%ARRAY_SIZE = ARRAY_SIZE
         allocate(this%vals(this%ARRAY_SIZE))
         this%vals = vals
@@ -84,7 +85,7 @@ contains
 
     pure function real_add_prim_real(this, x) result(res)
         class(real_number_t), intent(in) :: this
-        real, intent(in) :: x(this%ARRAY_SIZE)
+        real(dp), intent(in) :: x(this%ARRAY_SIZE)
         class(number_t), allocatable :: res
         res = real_number_t(this%vals + x, this%ARRAY_SIZE)
     end function
