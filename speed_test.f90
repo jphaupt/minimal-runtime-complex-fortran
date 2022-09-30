@@ -2,7 +2,7 @@ program speed_test
     use iso_fortran_env, only: stdout => output_unit
     use real_or_complex_mod, only: number_t, real_number_t
     implicit none(type, external)
-    integer, parameter :: ARRAY_SIZE = 1000000
+    integer, parameter :: ARRAY_SIZE = 2000000000
     class(number_t), allocatable :: soa
         !! now struct of arrays
         !! not any more array of structs
