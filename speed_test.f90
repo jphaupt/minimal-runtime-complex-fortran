@@ -2,7 +2,7 @@ program speed_test
     use iso_fortran_env, only: stdout => output_unit
     use real_or_complex_mod, only: number_t, real_number_t
     implicit none(type, external)
-    integer, parameter :: ARRAY_SIZE = 10000
+    integer, parameter :: ARRAY_SIZE = 1000000
     class(number_t), allocatable :: aos
         !! now struct of arrays
         !! not any more array of structs
@@ -21,15 +21,24 @@ program speed_test
     x = 1. ! allocate
     print*, 'sum=', sum(x) ! sum and output
     call cpu_time(tock)
-    print '("Benchmark = ",f6.5," s")', tock - tick
+    print '("Benchmark = ",e10.5," s")', tock - tick
 
     ! struct of array
     ! aos = real_number_t([1.],1)
-    aos = real_number_t(ARRAY_SIZE=1)
-    allocate(aos%vals(ARRAY_SIZE))
-    aos%vals = 1.
+    call cpu_time(tick)
+    aos = real_number_t(ARRAY_SIZE=ARRAY_SIZE)
+    select type(aos)
+    type is(real_number_t)
+        allocate(aos%vals(ARRAY_SIZE))
+        aos%vals = 1.
+        sum_tot = real_number_t([sum(aos%vals)], 1)
+    end select
 
-    call aos%print()
+    ! call aos%print()
+    print*, 'sum='
+    call sum_tot%print()
+    call cpu_time(tock)
+    print '("AoS = ",e10.5," s")', tock - tick
 
     ! ! "array of struct" - defunct
     ! not sure why this doesn't work
