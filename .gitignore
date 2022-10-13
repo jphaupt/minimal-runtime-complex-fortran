@@ -1,3 +1,5 @@
 *.mod
 *.o
 main
+prim_speed
+speed_test

@@ -1,9 +1,10 @@
 
 FC=gfortran
-FFLAGS=-O2
+# mcmodel=large allows to compile with large arrays, basically
+FFLAGS=-O2 -fPIC -mcmodel=large
 
 
-all: speed_test
+all: speed_test prim_speed
 
 # SOURCES=do_stuff.f90 real_or_complex.f90
 
@@ -16,6 +17,9 @@ speed_test: speed_test.f90 real_or_complex
 
 real_or_complex: real_or_complex_mod.f90
 	$(FC) $(FFLAGS) -c real_or_complex_mod.f90
+
+prim_speed: prim_speed.f90
+	$(FC) $(FFLAGS) -o prim_speed prim_speed.f90
 
 # main: real_or_complex
 # 	$(FC) -c main.f90

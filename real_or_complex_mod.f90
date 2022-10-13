@@ -7,7 +7,7 @@ module real_or_complex_mod
     private
     public :: real_or_complex_array_t
 
-    type :: real_or_complex_array_t
+    type, public :: real_or_complex_array_t
         !! please give it a better name if put into TCHInt :D
         integer :: ARRAY_SIZE
         logical :: complex_wf
@@ -18,7 +18,7 @@ module real_or_complex_mod
     contains
         private
         procedure, public :: sum_real
-        final :: real_or_complex_dtor
+        procedure, public :: clear
             !! destructor
     endtype real_or_complex_array_t
 
@@ -28,21 +28,25 @@ module real_or_complex_mod
     end interface real_or_complex_array_t
 
  contains
-    type(real_or_complex_array_t) function real_or_complex_ctor(complex_wf, array_size)
-        type(real_or_complex_array_t) :: this
+    type(real_or_complex_array_t) function real_or_complex_ctor(complex_wf, array_size) &
+                                        result(this)
+        ! type(real_or_complex_array_t) :: this
         logical :: complex_wf
         integer :: array_size
         this%complex_wf = complex_wf
         this%ARRAY_SIZE = array_size
-        if(complex_wf) allocate(this%vals_cmplx(this%ARRAY_SIZE))
-        if(.not. complex_wf) allocate(this%vals_real(this%ARRAY_SIZE))
+        if(this%complex_wf) then
+            allocate(this%vals_cmplx(this%ARRAY_SIZE))
+        else ! .not. complex_wf
+            allocate(this%vals_real(this%ARRAY_SIZE))
+        endif
     end function real_or_complex_ctor
 
-    subroutine real_or_complex_dtor(this)
-        type(real_or_complex_array_t) :: this
+    subroutine clear(this)
+        class(real_or_complex_array_t) :: this
         if(allocated(this%vals_real)) deallocate(this%vals_real)
         if(allocated(this%vals_cmplx)) deallocate(this%vals_cmplx)
-    end subroutine real_or_complex_dtor
+    end subroutine clear
 
     pure real(dp) function sum_real(this) result(vals_sum)
         class(real_or_complex_array_t), intent(in) :: this
