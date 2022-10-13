@@ -17,9 +17,9 @@ speed_test: speed_test.f90 real_or_complex
 real_or_complex: real_or_complex_mod.f90
 	$(FC) $(FFLAGS) -c real_or_complex_mod.f90
 
-# main: real_or_complex
-# 	$(FC) -c main.f90
-# 	$(FC) -o main main.o real_or_complex_mod.o
+main: real_or_complex
+	$(FC) -c main.f90
+	$(FC) -o main main.o real_or_complex_mod.o
 
 clean:
 	rm -f *.o *.mod main speed_test

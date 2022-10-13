@@ -1,19 +1,16 @@
 program speed_test
     use iso_fortran_env, only: stdout => output_unit, dp => real64
-    use real_or_complex_mod, only: number_t, real_number_t
+    use real_or_complex_mod, only: real_or_complex_array_t
     implicit none(type, external)
     integer, parameter :: ARRAY_SIZE = 1000000000
-    class(number_t), allocatable :: soa
-        !! now struct of arrays
-        !! not any more array of structs
+    type(real_or_complex_array_t) :: number_array
     real(dp) :: x(ARRAY_SIZE)
         !! benchmark reals
     real(dp) :: tick, tock
         !! timer
-    class(number_t), allocatable :: sum_tot
+    real(dp), allocatable :: sum_tot
+        !! one problem: this would need to be done via fypp(!)
     integer :: i
-
-    sum_tot = real_number_t(0.)
 
     ! benchmark: primitives
     call cpu_time(tick)
@@ -25,39 +22,12 @@ program speed_test
     ! struct of array
     ! aos = real_number_t([1.],1)
     call cpu_time(tick)
-    soa = real_number_t(ARRAY_SIZE=ARRAY_SIZE)
-    select type(soa)
-    type is(real_number_t)
-        allocate(soa%vals(ARRAY_SIZE))
-        soa%vals = 1.
-        sum_tot = real_number_t([sum(soa%vals)], 1)
-    end select
+    number_array = real_or_complex_array_t(.false., ARRAY_SIZE)
+    sum_tot = number_array%sum_real()
 
     ! call aos%print()
     print*, 'sum='
-    call sum_tot%print()
     call cpu_time(tock)
     print '("AoS = ",e10.5," s")', tock - tick
-
-    ! ! "array of struct" - defunct
-    ! not sure why this doesn't work
-    ! call cpu_time(tick)
-    ! ! allocate(real_number_t :: aos(ARRAY_SIZE))
-    ! ! aos = real_number_t(1.)
-    ! ! call aos(ARRAY_SIZE)%print()
-    ! ! aos(1) = real_number_t(1.)
-    ! do i=1,ARRAY_SIZE
-    !     aos(i) = real_number_t(1.)
-    ! enddo
-    ! ! aos = real_number_t(1.)
-    ! ! aos%print()
-    ! ! I think this is the only way to do this, at least for now
-    ! do i=1,ARRAY_SIZE
-    !     sum_tot = aos(i) + sum_tot
-    ! enddo
-    ! call sum_tot%print()
-    ! call cpu_time(tock)
-    ! print '("AoS = ",f6.5," s")', tock - tick
-
 
 end program speed_test
